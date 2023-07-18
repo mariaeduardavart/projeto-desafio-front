@@ -52,15 +52,23 @@
   margin-top: 10px;
 }
 
-.table-container {
-  margin-top: 20px;
-}
+
+
+  .table-container {
+    width: 500px;
+    height: 600px;
+    margin: 0 auto;
+  }
+  
+
 
 .table {
-  width: 100%;
+  width: 50%;
   border-collapse: collapse;
   font-family: Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
+  background-color: #fff;
+  border-radius: 5px;
 }
 
 .table thead th {
@@ -74,6 +82,7 @@
   padding: 10px;
   border-bottom: 1px solid #ddd;
 }
+
 
 .aviso-container {
   position: fixed;

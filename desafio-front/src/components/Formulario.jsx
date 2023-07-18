@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import TransferenciaService from '../service/TransferenciaService';
 import Tabela from './Tabela';
@@ -9,6 +9,7 @@ function Formulario() {
   const [nomeOperador, setNomeOperador] = useState('');
   const [dadosTabela, setDadosTabela] = useState([]);
   const [aviso, setAviso] = useState('');
+  const [saldoPeriodo, setSaldoPeriodo] = useState(0);
 
   const handlePesquisar = async () => {
     try {
@@ -18,13 +19,26 @@ function Formulario() {
 
         const transferencias = await TransferenciaService.obterTransferenciasPorPeriodoTempo(dataInicioFormatada, dataFimFormatada);
         setDadosTabela(transferencias);
+
+        // Calcular saldo do período
+        const saldoPeriodo = transferencias.reduce((total, transferencia) => total + transferencia.valor, 0);
+        setSaldoPeriodo(saldoPeriodo);
       } else if (nomeOperador) {
         const transferencias = await TransferenciaService.obterTransferenciasPorNomeOperador(nomeOperador);
         setDadosTabela(transferencias);
+
+        // Calcular saldo do período
+        const saldoPeriodo = transferencias.reduce((total, transferencia) => total + transferencia.valor, 0);
+        setSaldoPeriodo(saldoPeriodo);
       } else {
         const transferencias = await TransferenciaService.obterTodasTransferencias();
         setDadosTabela(transferencias);
+
+        // Calcular saldo do período
+        const saldoPeriodo = transferencias.reduce((total, transferencia) => total + transferencia.valor, 0);
+        setSaldoPeriodo(saldoPeriodo);
       }
+      
       // Limpar os inputs após a pesquisa
       setDataInicio('');
       setDataFim('');
@@ -41,14 +55,6 @@ function Formulario() {
 
   const handleCloseAviso = () => {
     setAviso('');
-  };
-
-  const calcularSaldoPeriodo = () => {
-    let saldoPeriodo = 0;
-    if (dadosTabela.length > 0) {
-      saldoPeriodo = dadosTabela.reduce((total, transferencia) => total + transferencia.valor, 0);
-    }
-    return saldoPeriodo;
   };
 
   return (
@@ -105,7 +111,7 @@ function Formulario() {
         </div>
       )}
 
-      <Tabela dados={dadosTabela} saldoPeriodo={calcularSaldoPeriodo()} />
+      <Tabela dados={dadosTabela} saldoPeriodo={saldoPeriodo} />
     </div>
   );
 }
